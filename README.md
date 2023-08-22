@@ -1,2 +1,2 @@
 # account
-User microservice for Med
+Account microservice for medical project.
