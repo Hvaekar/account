@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "profile_id": 1,
+    "title": "Some link title",
+    "link": "https://example.com/link1"
+  },
+  {
+    "id": 2,
+    "profile_id": 1,
+    "title": "Some link title 2",
+    "link": "https://example.com/link2"
+  },
+  {
+    "id": 3,
+    "profile_id": 2,
+    "title": "Some link title",
+    "link": "https://example.com/link3"
+  },
+  {
+    "id": 4,
+    "profile_id": 2,
+    "title": "Some link title 2",
+    "link": "https://example.com/link4"
+  }
+]

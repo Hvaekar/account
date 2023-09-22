@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "created_at": "2016-01-01 00:00:00.000",
+    "updated_at": "2023-02-01 00:00:00.000",
+    "login": "account1",
+    "password": "account1",
+    "first_name": "Some",
+    "father_name": "Full",
+    "last_name": "Name",
+    "sex": "man",
+    "photo": "example.jpg",
+    "birthday": "2000-01-01",
+    "language": "uk",
+    "country": "UA"
+  },
+  {
+    "id": 2,
+    "created_at": "2020-04-11 00:00:00.000",
+    "updated_at": "2022-11-22 00:00:00.000",
+    "login": "account2",
+    "password": "account2",
+    "sex": "woman",
+    "language": "ru",
+    "country": "RU"
+  },
+  {
+    "id": 3,
+    "created_at": "2020-04-11 00:00:00.000",
+    "updated_at": "2023-09-09 00:00:00.000",
+    "deleted_at": "2023-09-09 00:00:00.000",
+    "login": "account3",
+    "password": "account3",
+    "language": "en",
+    "country": "GB"
+  }
+]

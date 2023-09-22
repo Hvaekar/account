@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "profile_id": 1,
+    "number": "UA111222333",
+    "name": "Some patent name",
+    "link": "https://example.com/UA111222333"
+  },
+  {
+    "id": 2,
+    "profile_id": 1,
+    "number": "UA123456789",
+    "name": "Some patent name 2",
+    "link": "https://example.com/UA123456789"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "updated_at": "2023-02-01 00:00:00.000",
+    "account_id": 1,
+    "phone_id": 1,
+    "email_id": 1,
+    "height": 180,
+    "weight": 80,
+    "body_type": "ectomorph",
+    "blood_type": "B",
+    "rh": true,
+    "left_eye": 1.0,
+    "right_eye": -1.0,
+    "disability_group": "3",
+    "disability_reason": "Some disability reason",
+    "disability_document_num": "UA000000001",
+    "activity": "Some activity description",
+    "nutrition": "Some nutrition description",
+    "work": "Some work description"
+  },
+  {
+    "id": 2,
+    "updated_at": "2023-02-01 00:00:00.000",
+    "account_id": 2
+  },
+  {
+    "id": 3,
+    "updated_at": "2023-02-01 00:00:00.000",
+    "account_id": 3,
+    "height": 170,
+    "weight": 70
+  }
+]

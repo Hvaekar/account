@@ -1,0 +1,22 @@
+[
+  {
+    "experience_id": 1,
+    "specialization_id": 1
+  },
+  {
+    "experience_id": 1,
+    "specialization_id": 2
+  },
+  {
+    "experience_id": 1,
+    "specialization_id": 3
+  },
+  {
+    "experience_id": 2,
+    "specialization_id": 11
+  },
+  {
+    "experience_id": 2,
+    "specialization_id": 12
+  }
+]

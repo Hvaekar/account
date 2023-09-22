@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "profile_id": 1,
+    "metal": "Stainless steel",
+    "organ_id": 1,
+    "description": "Some metal component description"
+  },
+  {
+    "id": 2,
+    "profile_id": 1,
+    "metal": "Cuprum",
+    "organ_id": 2,
+    "description": "Some metal component description"
+  },
+  {
+    "id": 3,
+    "profile_id": 2,
+    "metal": "Stainless steel",
+    "organ_id": 11,
+    "description": "Some metal component description"
+  },
+  {
+    "id": 4,
+    "profile_id": 3,
+    "metal": "Stainless steel",
+    "organ_id": 22,
+    "description": "Some metal component description"
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "profile_id": 1,
+    "specialization_id": 1,
+    "start": "2019-09-15"
+  },
+  {
+    "profile_id": 1,
+    "specialization_id": 2,
+    "start": "2019-09-15"
+  },
+  {
+    "profile_id": 1,
+    "specialization_id": 3,
+    "start": "2018-01-01"
+  },
+  {
+    "profile_id": 2,
+    "specialization_id": 11,
+    "start": "2016-06-01"
+  },
+  {
+    "profile_id": 2,
+    "specialization_id": 12,
+    "start": "2020-12-12"
+  }
+]

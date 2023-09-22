@@ -1,0 +1,20 @@
+[
+  {
+    "account_id": 1,
+    "patient_profile_id": 2,
+    "permission_edit": true,
+    "verified": false
+  },
+  {
+    "account_id": 1,
+    "patient_profile_id": 3,
+    "permission_edit": false,
+    "verified": true
+  },
+  {
+    "account_id": 2,
+    "patient_profile_id": 1,
+    "permission_edit": true,
+    "verified": true
+  }
+]

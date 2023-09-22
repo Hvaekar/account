@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+  account:
+    env_file:
+      - docker.env
+    command:
+      - ./account
+      - --space=docker
+      - serve
+    build:
+      context: .
+      dockerfile: Dockerfile
+      #ssh: #?
+        #- "default"
+      args:
+        nolint: "true"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      #- kafka1
+      #- zookeeper
+    networks:
+      - account
+
+  postgres:
+    image: postgres
+    restart: always
+    env_file:
+      - docker.env
+    networks:
+      - account
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    expose:
+      - "5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+
+  migrations:
+    image: migrate/migrate
+    env_file:
+      - docker.env
+    networks:
+      - account
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${POSTGRES_SSLMODE}", "up"]
+    links:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  zookeeper:
+    image: zookeeper:latest
+    container_name: zookeeper
+    hostname: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+    volumes:
+      - ./data/zookeeper/data:/data
+      - ./data/zookeeper/datalog:/datalog
+    networks:
+      - account
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka1
+    hostname: kafka1
+    restart: always
+    ports:
+      - "9091:9091"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19091,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-host.docker.internal}:9091
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./data/kafka1/data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    networks:
+      - account
+
+volumes:
+  db-data:
+  migrations:
+
+networks:
+  account:

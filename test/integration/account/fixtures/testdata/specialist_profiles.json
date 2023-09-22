@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "updated_at": "2023-02-01 00:00:00.000",
+    "account_id": 1,
+    "phone_id": 2,
+    "email_id": 2,
+    "about": "Some text about me as specialist",
+    "medical_category": "3",
+    "treats_adults": true,
+    "treats_children": false
+  },
+  {
+    "id": 2,
+    "updated_at": "2023-02-01 00:00:00.000",
+    "account_id": 2,
+    "about": "Some text about me as specialist",
+    "medical_category": "1",
+    "treats_adults": false,
+    "treats_children": true
+  }
+]

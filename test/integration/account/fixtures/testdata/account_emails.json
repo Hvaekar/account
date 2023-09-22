@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "account_id": 1,
+    "type": "personal",
+    "email": "account1_personal@example.com",
+    "verified": true,
+    "open": false
+  },
+  {
+    "id": 2,
+    "account_id": 1,
+    "type": "work",
+    "email": "account1_work@example.com",
+    "verified": false,
+    "open": true
+  },
+  {
+    "id": 3,
+    "account_id": 1,
+    "type": "other",
+    "email": "account1_other@example.com",
+    "verified": true,
+    "open": false
+  }
+]

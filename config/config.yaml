@@ -1,0 +1,55 @@
+server:
+  AppVersion: 1.0.0
+  Host: localhost
+  Port: :8080
+  Development: true
+  Debug: false
+  SSL: false
+  ReadTimeout: 5 # in seconds
+  WriteTimeout: 5 # in seconds
+  CtxDefaultTimeout: 12 # in seconds
+  IdleTimeout: 5 # in seconds
+  MaxConnectionAge: 5 # in seconds
+  Time: 120 # in seconds
+
+postgres:
+  Host: localhost #for docker: host.docker.internal or container name # remove to .env (!)
+  Port: 5432 # remove to .env (!)
+  User: postgres # remove to .env (!)
+  Password: Ukraine1 # remove to .env (!)
+  DB: account # remove to .env (!)
+  SSLMode: disable # remove to .env (!)
+  Driver: pgx
+  MaxOpenConns: 60
+  ConnMaxLifetime: 120
+  MaxIdleConns: 30
+  ConnMaxIdleTime: 20
+
+logger:
+  LoggerName: zap # vars: zap, logrus
+  DisableCaller: false
+  DisableStacktrace: false
+  Encoding: console # vars: json, console
+  Level: info # vars: debug, info, warn, error, panic, fatal
+
+aws:
+  Region: eu-central-1
+  ID:
+  SecretAccessKey:
+  AccountBucketName: med-account
+
+jwt:
+  AccessTokenCookieName: access_token
+  AccessTokenSecretKey: zVgKPxBcZHNMzZnSSdzTc3juh9J3jot6vQ0yrfTlijnHziE44a7V514IZ7Nlxz5 # remove to .env (!)
+  AccessTokenExpiresAt: 720h
+  RefreshTokenCookieName: refresh_token
+  RefreshTokenSecretKey: Jm5smKNiZQaSuQGAl36aaExW4PudSsdo6SsqmUmIdkRuCGKtbTlcOnJB4zWMXFo # remove to .env (!)
+  RefreshTokenExpiresAt: 2160h
+
+verify:
+  VerifyCodeCookieName: verify_hash_code
+  VerifyCodeExpiresAt: 1h
+
+kafka:
+  Brokers: [localhost:9092]
+  Deadline: 10

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "account_id": 1,
+    "type": "personal",
+    "city_id": 1,
+    "address": "Some personal address, 1",
+    "open": false
+  },
+  {
+    "id": 2,
+    "account_id": 1,
+    "type": "work",
+    "city_id": 1,
+    "address": "Some work address, 1",
+    "open": true
+  },
+  {
+    "id": 3,
+    "account_id": 2,
+    "type": "work",
+    "city_id": 1,
+    "address": "Some work address, 1",
+    "open": true
+  }
+]

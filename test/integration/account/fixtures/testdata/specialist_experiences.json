@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "profile_id": 1,
+    "company_id": 1,
+    "company": "Some company name",
+    "start": "2018-01-01",
+    "finish": "2020-07-15"
+  },
+  {
+    "id": 2,
+    "profile_id": 1,
+    "company_id": 2,
+    "company": "Some company name",
+    "start": "2020-07-15"
+  },
+  {
+    "id": 3,
+    "profile_id": 2,
+    "company_id": 1,
+    "company": "Some company name",
+    "start": "2021-10-01"
+  }
+]

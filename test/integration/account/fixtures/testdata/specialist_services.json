@@ -1,0 +1,42 @@
+[
+  {
+    "profile_id": 1,
+    "service_id": 1
+  },
+  {
+    "profile_id": 1,
+    "service_id": 2
+  },
+  {
+    "profile_id": 1,
+    "service_id": 3
+  },
+  {
+    "profile_id": 1,
+    "service_id": 4
+  },
+  {
+    "profile_id": 1,
+    "service_id": 5
+  },
+  {
+    "profile_id": 2,
+    "service_id": 1
+  },
+  {
+    "profile_id": 2,
+    "service_id": 2
+  },
+  {
+    "profile_id": 2,
+    "service_id": 3
+  },
+  {
+    "profile_id": 2,
+    "service_id": 4
+  },
+  {
+    "profile_id": 2,
+    "service_id": 5
+  }
+]

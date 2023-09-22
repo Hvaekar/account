@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "account_id": 1,
+    "type": "personal",
+    "code": "38",
+    "phone": "0000000000",
+    "verified": true,
+    "open": false
+  },
+  {
+    "id": 2,
+    "account_id": 1,
+    "type": "work",
+    "code": "38",
+    "phone": "0110000000",
+    "verified": false,
+    "open": true
+  },
+  {
+    "id": 3,
+    "account_id": 1,
+    "type": "other",
+    "code": "38",
+    "phone": "0220000000",
+    "verified": true,
+    "open": false
+  }
+]
