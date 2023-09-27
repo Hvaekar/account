@@ -193,35 +193,20 @@ func (s *AccountTestSuite) TestUpdateAccountPhoto() {
 	s.Require().NoError(s.db.TruncateTables(s.ctx, truncateTables...))
 	s.Require().NoError(fixtures.PopulateDB(s.ctx, s.db.GetDB()))
 
-	// with path
-	path := "./fixtures/testfiles/test-file.png"
+	// path as name
+	path := "example2.jpg"
 	req := model.UpdatePhoto{
-		Path: &path,
+		Name: &path,
 	}
 
 	account, err := s.client.UpdatePhoto(s.ctx, s.token.Access, &req)
 	s.Require().NoError(err)
 
-	s.NotEmpty(account.Photo)
-	s.NotEqual("example.jpg", *account.Photo)
-
-	err = s.s3.DeleteObject(s.ctx, *account.Photo)
-	s.Require().NoError(err)
-
-	// path as name
-	path = "example2.jpg"
-	req = model.UpdatePhoto{
-		Path: &path,
-	}
-
-	account, err = s.client.UpdatePhoto(s.ctx, s.token.Access, &req)
-	s.Require().NoError(err)
-
-	s.Equal(*req.Path, *account.Photo)
+	s.Equal(*req.Name, *account.Photo)
 
 	// path as nil
 	req = model.UpdatePhoto{
-		Path: nil,
+		Name: nil,
 	}
 
 	account, err = s.client.UpdatePhoto(s.ctx, s.token.Access, &req)

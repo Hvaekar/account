@@ -3,7 +3,10 @@ package account
 import (
 	"github.com/Hvaekar/med-account/pkg/model"
 	"github.com/Hvaekar/med-account/test/integration/account/fixtures"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -19,18 +22,22 @@ func (s *FileTestSuite) TestAddFile() {
 	s.Require().NoError(s.db.TruncateTables(s.ctx, truncateTables...))
 	s.Require().NoError(fixtures.PopulateDB(s.ctx, s.db.GetDB()))
 
-	req := model.AddFile{
-		Path: "./fixtures/testfiles/test-file.png",
-	}
+	file, err := os.Open("./fixtures/testfiles/test-file.png")
+	s.Require().NoError(err)
+	defer file.Close()
 
-	file, err := s.client.AddFile(s.ctx, s.token.Access, &req)
+	s.uploaderAPIMock.On("UploadWithContext", mock.Anything, mock.Anything).
+		Return(nil, nil).
+		Once()
+
+	f, err := s.client.AddFile(s.ctx, s.token.Access, file, filepath.Base(file.Name()))
 	s.Require().NoError(err)
 
-	s.NotEmpty(file.ID)
-	s.NotEmpty(file.Name)
+	s.NotEmpty(f.ID)
+	s.NotEmpty(f.Name)
 
-	err = s.s3.DeleteObject(s.ctx, file.Name)
-	s.Require().NoError(err)
+	//err = s.s3.DeleteObject(s.ctx, f.Name)
+	//s.Require().NoError(err)
 }
 
 func (s *FileTestSuite) TestGetFiles() {

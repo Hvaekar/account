@@ -5,7 +5,6 @@ import (
 	"github.com/Hvaekar/med-account/pkg/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 )
 
 type FileHandler struct {
@@ -30,18 +29,29 @@ func (h *FileHandler) InitRoutes(r gin.IRouter) {
 func (h *FileHandler) AddFile(c *gin.Context) {
 	a := c.MustGet("current_account").(*model.Account)
 
-	var req model.AddFile
-	if err := c.ShouldBindJSON(&req); err != nil {
+	file, err := c.FormFile("file")
+	if err != nil {
 		h.sendError(c, err, http.StatusBadRequest)
 		return
 	}
 
-	if !strings.Contains(req.Path, "/") {
-		h.sendError(c, ErrInvalidField, http.StatusBadRequest)
-		return
-	}
+	//var req model.AddFile
+	//if err := c.ShouldBind(&req); err != nil {
+	//	h.sendError(c, err, http.StatusBadRequest)
+	//	return
+	//}
+	//
+	//if req.File == nil {
+	//	h.sendError(c, ErrInvalidField, http.StatusBadRequest)
+	//	return
+	//}
 
-	name, err := h.s3.UploadObject(c, req.Path)
+	//if !strings.Contains(req.Path, "/") {
+	//	h.sendError(c, ErrInvalidField, http.StatusBadRequest)
+	//	return
+	//}
+
+	name, err := h.s3.UploadObject(c, file)
 	if err != nil || name == nil {
 		h.sendError(c, err, http.StatusBadRequest)
 		return

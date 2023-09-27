@@ -6,7 +6,6 @@ import (
 	"github.com/Hvaekar/med-account/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -125,7 +124,7 @@ func (h *AccountHandler) UpdatePhoto(c *gin.Context) {
 
 	reqDB := make(model.UpdateAccountFields)
 	var err error
-	if req.Path == nil {
+	if req.Name == nil {
 		reqDB["photo"] = nil
 		reqDB.Prepare()
 
@@ -135,34 +134,19 @@ func (h *AccountHandler) UpdatePhoto(c *gin.Context) {
 			return
 		}
 	} else {
-		name := req.Path
-		if strings.Contains(*req.Path, "/") {
-			name, err = h.s3.UploadObject(c, *req.Path)
-			if err != nil || name == nil {
-				h.sendError(c, err, http.StatusInternalServerError)
-				return
-			}
-
-			_, err = h.storage.AddFile(c, a.ID, name)
-			if err != nil {
-				h.sendError(c, err, http.StatusInternalServerError)
-				return
-			}
-		} else {
-			f, err := h.storage.GetFileByName(c, name)
-			if err != nil || f.AccountID != a.ID {
-				h.sendError(c, err, http.StatusInternalServerError)
-				return
-			}
-
-			if f.AccountID != a.ID {
-				h.sendError(c, ErrNoPermissions, http.StatusBadRequest)
-				return
-			}
+		f, err := h.storage.GetFileByName(c, *req.Name)
+		if err != nil || f.AccountID != a.ID {
+			h.sendError(c, err, http.StatusInternalServerError)
+			return
 		}
 
-		if *name != *a.Photo {
-			reqDB["photo"] = name
+		if f.AccountID != a.ID {
+			h.sendError(c, ErrNoPermissions, http.StatusBadRequest)
+			return
+		}
+
+		if *req.Name != *a.Photo {
+			reqDB["photo"] = *req.Name
 			reqDB.Prepare()
 
 			a, err = h.storage.UpdateAccountFields(c, a.ID, reqDB)

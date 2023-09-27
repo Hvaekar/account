@@ -13,6 +13,8 @@ import (
 	"github.com/Hvaekar/med-account/pkg/server/ginmiddleware"
 	"github.com/Hvaekar/med-account/pkg/storage"
 	"github.com/Hvaekar/med-account/pkg/storage/postgres"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -36,8 +38,18 @@ func Serve() *cli.Command {
 				return fmt.Errorf("init logger: %w", err)
 			}
 
+			// aws session
+			aws := amazon.NewAWS(&cfg.AWS)
+			awsSession := aws.CreateSession()
+
 			// create app
-			router, db, _, _, err := CreateApp(cfg, log)
+			router, db, _, _, err := CreateApp(
+				cfg,
+				log,
+				aws,
+				s3manager.NewUploader(awsSession),
+				s3manager.NewDownloader(awsSession),
+			)
 			if err != nil {
 				return fmt.Errorf("create app: %w", err)
 			}
@@ -78,18 +90,18 @@ func Serve() *cli.Command {
 	}
 }
 
-func CreateApp(cfg *config.Config, log logger.Logger) (*gin.Engine, storage.Storage, *amazon.S3, broker.MessageBroker, error) {
+func CreateApp(
+	cfg *config.Config,
+	log logger.Logger,
+	aws *amazon.AWS,
+	s3Uploader s3manageriface.UploaderAPI,
+	s3Downloader s3manageriface.DownloaderAPI,
+) (*gin.Engine, storage.Storage, *amazon.S3, broker.MessageBroker, error) {
 	// connect to postgres storage
 	psqlStorage := postgres.NewPostgres(&cfg.Postgres)
 	if err := psqlStorage.Connect(); err != nil {
 		return nil, nil, nil, nil, fmt.Errorf("connect postgres: %w", err)
 	}
-
-	// aws session and s3 client
-	aws := amazon.NewAWS(&cfg.AWS)
-	aws.CreateSession()
-	s3 := amazon.NewS3(aws)
-	s3.CreateClient()
 
 	// create message broker
 	kafkaMB := kafka.NewMessageBroker(&cfg.Kafka, log)
@@ -100,12 +112,15 @@ func CreateApp(cfg *config.Config, log logger.Logger) (*gin.Engine, storage.Stor
 		return nil, nil, nil, nil, fmt.Errorf("kafka add producer: %w", err)
 	}
 
+	// aws s3
+	awsS3 := amazon.NewS3(aws, s3Uploader, s3Downloader)
+
 	// create router and handlers
 	router := gin.New()
 
 	psql := account.NewPostgresStorage(psqlStorage)
 
-	basicH := handler.NewBasicHandler(log, cfg, psql, s3, kafkaMB)
+	basicH := handler.NewBasicHandler(log, cfg, psql, awsS3, kafkaMB)
 	authH := handler.NewAuthHandler(basicH)
 	accountH := handler.NewAccountHandler(basicH)
 	fileH := handler.NewFileHandler(basicH)
@@ -157,5 +172,5 @@ func CreateApp(cfg *config.Config, log logger.Logger) (*gin.Engine, storage.Stor
 
 	pprof.Register(router)
 
-	return router, psqlStorage, s3, kafkaMB, nil
+	return router, psqlStorage, awsS3, kafkaMB, nil
 }

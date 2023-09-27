@@ -12,6 +12,8 @@ const (
 	ErrRegisterRequest    = "register request"
 	ErrDoRequest          = "do request"
 	ErrDecodeResponseBody = "decode response body"
+	ErrCreateFormFile     = "create form file"
+	ErrCopyFile           = "copy file to part"
 )
 
 func (h *HTTPClient) error(template string, err error) error {

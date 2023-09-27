@@ -84,7 +84,7 @@ type UpdatePassword struct {
 }
 
 type UpdatePhoto struct {
-	Path *string `json:"path"`
+	Name *string `json:"name"`
 }
 
 type UpdateAccountFields map[string]interface{}

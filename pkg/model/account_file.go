@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/Hvaekar/med-account/pkg/storage"
+	"mime/multipart"
 	"time"
 )
 
@@ -42,7 +43,8 @@ func (f FileJoin) ConvertToFile() File {
 }
 
 type AddFile struct {
-	Path string `json:"path" binding:"required"`
+	File *multipart.FileHeader `form:"file" binding:"required"`
+	//Path string                `json:"path" form:"path" binding:"required"`
 }
 
 type UpdateFile struct {

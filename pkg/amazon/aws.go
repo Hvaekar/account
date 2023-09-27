@@ -16,13 +16,15 @@ func NewAWS(cfg *config.AWS) *AWS {
 	return &AWS{cfg: cfg}
 }
 
-func (a *AWS) CreateSession() {
+func (a *AWS) CreateSession() *session.Session {
 	a.session = session.Must(session.NewSession(
 		&aws.Config{
 			Region:      aws.String(a.cfg.Region),
 			Credentials: credentials.NewStaticCredentials(a.cfg.ID, a.cfg.SecretAccessKey, ""),
 		},
 	))
+
+	return a.session
 }
 
 func (a *AWS) GetSession() *session.Session {

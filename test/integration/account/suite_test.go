@@ -58,6 +58,9 @@ type TestSuite struct {
 	mb     broker.MessageBroker
 	token  *model.Token
 	client *client.HTTPClient
+
+	uploaderAPIMock   *amazon.MockUploaderAPI
+	downloaderAPIMock *amazon.MockDownloaderAPI
 }
 
 func (s *TestSuite) SetupSuite() {
@@ -114,8 +117,15 @@ func (s *TestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	s.Require().NoError(m.Up())
 
+	// aws session and s3 client
+	s.downloaderAPIMock = amazon.NewMockDownloaderAPI(s.T())
+	s.uploaderAPIMock = amazon.NewMockUploaderAPI(s.T())
+
+	aws := amazon.NewAWS(&cfg.AWS)
+	_ = aws.CreateSession()
+
 	// create app
-	handler, db, s3, mb, err := commands.CreateApp(cfg, log)
+	handler, db, s3, mb, err := commands.CreateApp(cfg, log, aws, s.uploaderAPIMock, s.downloaderAPIMock)
 	s.Require().NoError(err)
 
 	s.db = db

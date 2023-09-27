@@ -1,3 +1,5 @@
+//go:generate mockery --name=UploaderAPI --structname=MockUploaderAPI --srcpkg=github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface --case=underscore --output=. --outpkg=amazon
+//go:generate mockery --name=DownloaderAPI --structname=MockDownloaderAPI --srcpkg=github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface --case=underscore --output=. --outpkg=amazon
 package amazon
 
 import (
@@ -7,6 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 )
@@ -21,44 +25,43 @@ var validImgExt = map[string]bool{
 	"svg":  true,
 }
 
-type IS3 interface {
-	UploadObject(c context.Context, filePath string) (*string, error)
-}
-
 type S3 struct {
 	*AWS
-	client *s3.S3
+	client     *s3.S3
+	Uploader   s3manageriface.UploaderAPI
+	Downloader s3manageriface.DownloaderAPI
 }
 
-func NewS3(aws *AWS) *S3 {
-	return &S3{AWS: aws}
+func NewS3(aws *AWS, uploader s3manageriface.UploaderAPI, downloader s3manageriface.DownloaderAPI) *S3 {
+	return &S3{
+		AWS:        aws,
+		client:     s3.New(aws.session),
+		Uploader:   uploader,
+		Downloader: downloader,
+	}
 }
 
-func (s *S3) CreateClient() {
-	s.client = s3.New(s.session)
-}
-
-func (s *S3) UploadObject(c context.Context, filePath string) (*string, error) {
-	fileExt := filepath.Ext(filePath)
+func (s *S3) UploadObject(c context.Context, file *multipart.FileHeader) (*string, error) {
+	fileExt := filepath.Ext(file.Filename)
 	if !validateImgExt(fileExt[1:]) {
 		return nil, fmt.Errorf("invalid file ext")
 	}
 
-	file, err := os.Open(filePath)
+	f, err := file.Open()
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer f.Close()
 
 	fileName := utils.RandString(fileNameLength)
 	s3name := fileName + fileExt
 
-	_, err = s3manager.NewUploader(s.session).UploadWithContext(
+	_, err = s.Uploader.UploadWithContext(
 		c,
 		&s3manager.UploadInput{
 			Bucket: aws.String(s.cfg.AccountBucketName),
 			Key:    aws.String(s3name),
-			Body:   file,
+			Body:   f,
 		},
 	)
 	if err != nil {
@@ -75,7 +78,7 @@ func (s *S3) DownloadObject(c context.Context, item string, fileName string) err
 	}
 	defer file.Close()
 
-	_, err = s3manager.NewDownloader(s.session).DownloadWithContext(
+	_, err = s.Downloader.DownloadWithContext(
 		c,
 		file,
 		&s3.GetObjectInput{

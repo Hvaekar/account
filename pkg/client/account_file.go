@@ -5,23 +5,33 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/Hvaekar/med-account/pkg/model"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 )
 
-func (h *HTTPClient) AddFile(c context.Context, token string, r *model.AddFile) (*model.File, error) {
-	body, err := json.Marshal(r)
+func (h *HTTPClient) AddFile(c context.Context, token string, f multipart.File, name string) (*model.File, error) {
+	var buf bytes.Buffer
+	m := multipart.NewWriter(&buf)
+
+	part, err := m.CreateFormFile("file", name)
 	if err != nil {
-		return nil, h.error(ErrMarshalRequest, err)
+		return nil, h.error(ErrCreateFormFile, err)
+	}
+	if _, err := io.Copy(part, f); err != nil {
+		return nil, h.error(ErrCopyFile, err)
 	}
 
-	req, err := http.NewRequestWithContext(c, http.MethodPost, h.baseURL+"/account/files", bytes.NewReader(body))
+	m.Close()
+
+	req, err := http.NewRequestWithContext(c, http.MethodPost, h.baseURL+"/account/files", bytes.NewReader(buf.Bytes()))
 	if err != nil {
 		return nil, h.error(ErrRegisterRequest, err)
 	}
 
 	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", m.FormDataContentType())
 
 	resp, err := h.Client.Do(req)
 	if err != nil {
